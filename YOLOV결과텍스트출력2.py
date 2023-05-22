@@ -30,11 +30,14 @@ def detect_objects(image_path):
     # confidence를 소수에서 정수로 변환하고 % 기호 추가
     df['confidence'] = (df['confidence'] * 100).astype(int).astype(str) + '%'
 
+    # sul로 시작하는 name을 '설향'으로, geum으로 시작하는 name을 '금실'로 분류하여 strawberry_type 열에 추가
+    df['strawberry_type'] = df['name'].apply(lambda x: f"sul_{x[-1]}" if x.startswith('sul') else f"geum_{x[-1]}" if x.startswith('geum') else '')
+
     # 정확도를 기준으로 내림차순으로 정렬
     df = df.sort_values(by='confidence', ascending=False)
 
     # 열 순서 변경
-    df = df[['name', 'class', 'confidence']]
+    df = df[['name', 'strawberry_type', 'class', 'confidence']]
 
     # DataFrame을 CSV 파일로 저장
     csv_path = 'detection_results.csv'
@@ -43,7 +46,7 @@ def detect_objects(image_path):
     return csv_path
 
 # 이미지 경로 설정
-image_path = 'g.jpg'
+image_path = 'test.jpg'
 
 # 객체 감지 및 결과 저장
 csv_path = detect_objects(image_path)
