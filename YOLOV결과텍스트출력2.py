@@ -40,7 +40,7 @@ def detect_objects(image_path):
     df = df[['name', 'strawberry_type', 'class', 'confidence']]
 
     # DataFrame을 CSV 파일로 저장
-    csv_path = 'detection_results.csv'
+    csv_path = 'detection_results1.csv'
     df.to_csv(csv_path, index=False)
 
     return csv_path
