@@ -1,0 +1,54 @@
+Type,Value
+Current accuracy:,90.0
+Matching value,sul_5
+Matching data in mean_per_stage.csv:,
+ti_value,19.89697960251046
+hi_value,56.245684303872295
+ci_value,507.05870983329305
+ir_value,165.16666666666666
+tl_value,17.147619047619045
+ei_value,0.7079354445797806
+pl_value,7.608842105263158
+sr_value,210.72908366533864
+cl_value,15.800665188470067
+el_value,7.071465968586388
+hl_value,3.1408488063660474
+pi_value,7.217801047120419
+"Data in now.csv (2nd column, starting from 2nd row):",
+ti_value,30
+hi_value,70
+ci_value,500
+ir_value,300
+tl_value,100
+ei_value,10
+pl_value,10
+sr_value,300
+cl_value,100
+el_value,50
+hl_value,10
+pi_value,10
+Differences between matching_data and now_csv_data:,
+ti_value,-10.10302039748954
+hi_value,-13.754315696127705
+ci_value,7.058709833293051
+ir_value,-134.83333333333334
+tl_value,-82.85238095238095
+ei_value,-9.29206455542022
+pl_value,-2.3911578947368417
+sr_value,-89.27091633466136
+cl_value,-84.19933481152994
+el_value,-42.92853403141361
+hl_value,-6.859151193633952
+pi_value,-2.7821989528795807
+Predicted values for the next day:,
+ti_value,22
+hi_value,91
+ci_value,377
+ir_value,145
+tl_value,22
+Differences between prediction_data and now_csv_data:,
+Difference for ti_value,-7.750083923339844
+Difference for hi_value,21.044509887695312
+Difference for ci_value,-122.09860229492188
+Difference for ir_value,-154.64614868164062
+Difference for tl_value,-77.10128021240234

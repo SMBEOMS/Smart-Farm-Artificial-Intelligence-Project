@@ -1,71 +1,4 @@
-import pandas as pd
 
-# CSV 파일 로드
-data_now = pd.read_csv('now.csv')
-data_detection = pd.read_csv('detection_results1.csv')
-data_results = pd.read_csv('results.csv')
-
-# now.csv에서 필요한 데이터 선택
-selected_columns = data_now[['data_value', 'now']]  # 'data_value'와 'now' 열 선택
-
-# detection_results1.csv에서 필요한 데이터 추출
-strawberry_type = data_detection['strawberry_type'][0].split('_')[0]  # 딸기종류
-
-# 딸기종류 한글 변환
-if strawberry_type == "sul":
-    strawberry_type_korean = "설향"
-elif strawberry_type == "geam":
-    strawberry_type_korean = "금향"
-else:
-    strawberry_type_korean = strawberry_type
-
-data_detection['class'] = data_detection['class'].astype(str)  # 문자열로 변환
-
-# 성장단계 한글 변환
-growth_stage_mapping = {
-    "0": "정식기",
-    "1": "출뢰기",
-    "2": "개화기",
-    "3": "과실비대기",
-    "4": "수확기",
-    "5": "정식기",
-    "6": "출뢰기",
-    "7": "개화기",
-    "8": "과실비대기",
-    "9": "수확기",
-    "10": "정식기",
-    "11": "출뢰기",
-    "12": "개화기",
-    "13": "과실비대기",
-    "14": "수확기",
-    "15": "정식기",
-    "16": "출뢰기",
-    "17": "개화기",
-    "18": "과실비대기",
-    "19": "수확기"
-}
-
-data_detection['class_korean'] = data_detection['class'].map(growth_stage_mapping)
-growth_stage_korean = data_detection['class_korean'][0]  # 첫 번째 데이터의 한글 성장단계
-
-confidence = data_detection['confidence'][0]  # 정확도
-
-# results.csv에서 필요한 데이터 선택
-start_index = data_results[data_results['Type'] == 'Matching data in mean_per_stage.csv:'].index[0]
-end_index = data_results[data_results['Type'] == 'Data in now.csv (2nd column, starting from 2nd row):'].index[0]
-selected_results = data_results.loc[start_index+1:end_index-1, ['Type', 'Value']]
-
-# results.csv에서 필요한 데이터 선택2
-start_index2 = data_results[data_results['Type'] == 'Predicted values for the next day:'].index[0]
-end_index2 = data_results[data_results['Type'] == 'Differences between prediction_data and now_csv_data:'].index[0]
-selected_results2 = data_results.loc[start_index2+1:end_index2-1, ['Type', 'Value']]
-
-start_index3 = data_results[data_results['Type'] == 'Differences between prediction_data and now_csv_data:'].index[0]
-end_index3 = len(data_results)
-selected_differences = data_results.loc[start_index3+1:end_index3, ['Type', 'Value']]
-
-# HTML 템플릿 생성 및 데이터 삽입
-html_template = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,81 +20,81 @@ html_template = """
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
   <style>
-    body {{
+    body {
       padding: 20px;
-    }}
+    }
 
-    .grid-container {{
+    .grid-container {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
       gap: 20px;
       align-items: center;
       margin-bottom: 40px;
-    }}
+    }
 
-    .image-container {{
+    .image-container {
       grid-column: span 6;
       text-align: center;
-    }}
+    }
 
-    .column-name-container {{
+    .column-name-container {
       grid-column: span 3;
       font-size: 18px;
       text-align: center;
-    }}
+    }
 
-    .now {{
+    .now {
       grid-column: span 3;
       font-size: 14px;
-    }}
+    }
 
-    table {{
+    table {
       border-collapse: collapse;
       width: 100%;
       background-color: gainsboro;
-    }}
+    }
 
-    th, td {{
+    th, td {
       padding: 8px;
       text-align: left;
       border-bottom: 1px solid #ddd;
       background-color: white;
-    }}
+    }
   
-    img {{
+    img {
       width: 100%;
       height: auto;
       max-width: 100%;
       max-height: 100%;
-    }}
+    }
 
-    .center {{
+    .center {
       display: flex;
       justify-content: center;
-    }}
+    }
 
-    .center1 {{
+    .center1 {
       display: flex;
       justify-content: center;
       background-color: gainsboro;
       padding: 20px;
       margin-bottom: 40px;
-    }}
+    }
 
-    .grid-container2 {{
+    .grid-container2 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       align-items: center;
       margin-bottom: 40px;
-    }}
+    }
 
-    .table-container2 {{
+    .table-container2 {
       grid-column: span 4;
       border:10px solid rgb(253, 173, 1);
-    }}
+    }
 
-    back-to-top {{
+    back-to-top {
       position: fixed;
       display: none;
       width: 40px;
@@ -177,13 +110,13 @@ html_template = """
       transition: all 0.3s ease-in-out;
       opacity: 0.6;
       z-index: 9999;
-    }}
+    }
 
-    .back-to-top:hover {{
+    .back-to-top:hover {
       background: #1e4ba5;
       color: #fff;
       opacity: 1;
-    }}
+    }
   </style>
 </head>
 <body style="background-image: url('https://d18-invdn-com.investing.com/content/pic70e5f5fbd740abf686f7ff084068c49e.jpg'); background-repeat: no-repeat; background-size: contain;">
@@ -193,13 +126,13 @@ html_template = """
   <div class="grid-container">
     <div class="image-container">
       <h1 style="font-weight: bold; font-size: 40px; background-color: white;">입력이미지</h1>
-      <img src="{image_path}">
+      <img src="test.jpg">
     </div>
 
     <div class="column-name-container" style="border:10px solid red; padding: 10px; background-color: white;">
-      <h3 style="color: rgb(41, 0, 25); font-size: 50px; font-weight: bold;">딸기종류: {strawberry_type_korean}</h3><br>
-      <h3 style="color: rgb(41, 0, 25); font-size: 50px; font-weight: bold;">성장단계: {growth_stage_korean}</h3><br>
-      <h3 style="color: rgb(41, 0, 25); font-size: 50px; font-weight: bold;">정확도: {confidence}</h3>
+      <h3 style="color: rgb(41, 0, 25); font-size: 50px; font-weight: bold;">딸기종류: 설향</h3><br>
+      <h3 style="color: rgb(41, 0, 25); font-size: 50px; font-weight: bold;">성장단계: 수확기</h3><br>
+      <h3 style="color: rgb(41, 0, 25); font-size: 50px; font-weight: bold;">정확도: 92%</h3>
     </div>
 
     <div class="now"  style="border:10px solid skyblue;">
@@ -209,7 +142,58 @@ html_template = """
             <h3 style="font-weight: bold; font-size: 40px;">현재 데이터</h3>
           </th>
         </tr>
-        {data_rows}
+        <table style="margin-left:auto;margin-right:auto;" border="1" class="dataframe">
+  <tbody>
+    <tr>
+      <td>ti_value</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>hi_value</td>
+      <td>70</td>
+    </tr>
+    <tr>
+      <td>ci_value</td>
+      <td>500</td>
+    </tr>
+    <tr>
+      <td>ir_value</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <td>tl_value</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td>ei_value</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>pl_value</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>sr_value</td>
+      <td>300</td>
+    </tr>
+    <tr>
+      <td>cl_value</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <td>el_value</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>hl_value</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>pi_value</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
       </table>
     </div>
   </div>
@@ -222,7 +206,58 @@ html_template = """
             <h3 style="font-weight: bold; font-size: 40px;">최적값</h3>
           </th>
         </tr>
-        {result_rows}
+        <table style="margin-left:auto;margin-right:auto;" border="1" class="dataframe">
+  <tbody>
+    <tr>
+      <td>ti_value</td>
+      <td>19.89697960251046</td>
+    </tr>
+    <tr>
+      <td>hi_value</td>
+      <td>56.245684303872295</td>
+    </tr>
+    <tr>
+      <td>ci_value</td>
+      <td>507.05870983329305</td>
+    </tr>
+    <tr>
+      <td>ir_value</td>
+      <td>165.16666666666666</td>
+    </tr>
+    <tr>
+      <td>tl_value</td>
+      <td>17.147619047619045</td>
+    </tr>
+    <tr>
+      <td>ei_value</td>
+      <td>0.7079354445797806</td>
+    </tr>
+    <tr>
+      <td>pl_value</td>
+      <td>7.608842105263158</td>
+    </tr>
+    <tr>
+      <td>sr_value</td>
+      <td>210.72908366533864</td>
+    </tr>
+    <tr>
+      <td>cl_value</td>
+      <td>15.800665188470067</td>
+    </tr>
+    <tr>
+      <td>el_value</td>
+      <td>7.071465968586388</td>
+    </tr>
+    <tr>
+      <td>hl_value</td>
+      <td>3.1408488063660474</td>
+    </tr>
+    <tr>
+      <td>pi_value</td>
+      <td>7.217801047120419</td>
+    </tr>
+  </tbody>
+</table>
       </table>
     </div>
     <div class="table-container2">
@@ -232,7 +267,30 @@ html_template = """
             <h3 style="font-weight: bold; font-size: 40px;">내일 예상 데이터</h3>
           </th>
         </tr>
-        {result_rows2}
+        <table style="margin-left:auto;margin-right:auto;" border="1" class="dataframe">
+  <tbody>
+    <tr>
+      <td>ti_value</td>
+      <td>22</td>
+    </tr>
+    <tr>
+      <td>hi_value</td>
+      <td>91</td>
+    </tr>
+    <tr>
+      <td>ci_value</td>
+      <td>377</td>
+    </tr>
+    <tr>
+      <td>ir_value</td>
+      <td>145</td>
+    </tr>
+    <tr>
+      <td>tl_value</td>
+      <td>22</td>
+    </tr>
+  </tbody>
+</table>
       </table>
     </div>
     <div class="table-container2">
@@ -242,7 +300,30 @@ html_template = """
             <h3 style="font-weight: bold; font-size: 40px;">예상과 현재의 차이</h3>
           </th>
         </tr>
-        {result_row3}
+        <table style="margin-left:auto;margin-right:auto;" border="1" class="dataframe">
+  <tbody>
+    <tr>
+      <td>Difference for ti_value</td>
+      <td>-7.750083923339844</td>
+    </tr>
+    <tr>
+      <td>Difference for hi_value</td>
+      <td>21.044509887695312</td>
+    </tr>
+    <tr>
+      <td>Difference for ci_value</td>
+      <td>-122.09860229492188</td>
+    </tr>
+    <tr>
+      <td>Difference for ir_value</td>
+      <td>-154.64614868164062</td>
+    </tr>
+    <tr>
+      <td>Difference for tl_value</td>
+      <td>-77.10128021240234</td>
+    </tr>
+  </tbody>
+</table>
       </table>
     </div>
   </div>
@@ -275,24 +356,3 @@ html_template = """
 
 </html>
 
-"""
-
-# 이미지 경로 설정
-image_path = "test.jpg"  # 이미지 파일 경로
-
-# 현재 데이터 테이블 생성
-now_table = selected_columns.to_html(index=False, header=False).replace('<table', '<table style="margin-left:auto;margin-right:auto;"')
-
-# 결과 데이터 테이블 생성
-result_table = selected_results.to_html(index=False, header=False).replace('<table', '<table style="margin-left:auto;margin-right:auto;"')
-result_table2 = selected_results2.to_html(index=False, header=False).replace('<table', '<table style="margin-left:auto;margin-right:auto;"')
-differences_table = selected_differences.to_html(index=False, header=False).replace('<table', '<table style="margin-left:auto;margin-right:auto;"')
-
-# HTML 템플릿에 데이터 삽입
-html_output = html_template.format(image_path=image_path, strawberry_type_korean=strawberry_type_korean,
-                                   growth_stage_korean=growth_stage_korean, confidence=confidence,
-                                   data_rows=now_table, result_rows=result_table,result_rows2=result_table2, result_row3=differences_table)
-
-# 결과 HTML 파일 저장
-with open('output.html', 'w', encoding='utf-8') as f:
-    f.write(html_output)
